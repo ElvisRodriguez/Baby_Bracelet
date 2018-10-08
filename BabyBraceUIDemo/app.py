@@ -11,7 +11,7 @@ import os
 from dummy_data import DummyTime, DummyHeartBeat
 
 # Start pi_duino script & write output to file
-os.system("./pi_duino.py > output.txt& > /dev/null")
+os.system("./pi_duino.py >> output.txt")
 
 app = dash.Dash()
 
