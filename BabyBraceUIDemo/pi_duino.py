@@ -37,6 +37,10 @@ def read_serial_values(serial_obj):
 	while True:
 		if serial_obj.inWaiting() > 0:
 			input_value = serial_obj.readline()
+			try:
+				input_value = int(input_value)
+			except ValueError:
+				input_value = None
 			time_stamp = create_timestamp()
 			time_stamp = format_timestamp(time_stamp)
 			print(input_value, time_stamp)
