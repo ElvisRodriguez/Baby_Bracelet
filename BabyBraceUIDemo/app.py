@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import argparse
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -60,7 +61,15 @@ app.layout = html.Div(style={'backgroundColor': colors['background']},
 ])
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        app.run_server(debug=True, port=sys.argv[1])
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--host', help='Address to host server')
+    parser.add_argument('--port', help='Port of host server')
+    args=parser.parse_args()
+    if args.host and args.port:
+        app.run_server(debug=True, host=args.host, port=args.port)
+    elif args.host:
+        app.run_server(debug=True, host=args.host)
+    elif args.port:
+        app.run_server(debug=True, port=args.port)
     else:
         app.run_server(debug=True)
