@@ -50,7 +50,7 @@ app.layout = html.Div(style={'backgroundColor': colors['background']},
                 xaxis = dict(title = 'Time (in minutes)'),
                 yaxis = dict(title = 'Beats Per Minute'),
                 showlegend=True,
-                legend=go.Legend(
+                legend=go.layout.Legend(
                     x=0,
                     y=2.0
             ),
