@@ -6,12 +6,8 @@ import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objs as go
 import sys
-import os
 
 from dummy_data import DummyTime, DummyHeartBeat
-
-# Start pi_duino script & write output to file
-os.system("./pi_duino.py >> output.txt")
 
 app = dash.Dash()
 

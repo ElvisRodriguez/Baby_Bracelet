@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import serial
 import datetime
 
@@ -44,7 +45,6 @@ def read_serial_values(serial_obj):
 			time_stamp = create_timestamp()
 			time_stamp = format_timestamp(time_stamp)
 			print(input_value, time_stamp)
-
 
 if __name__ == '__main__':
 	serial_obj = create_serial_obj(port='/dev/ttyACM0', rate=9600)
