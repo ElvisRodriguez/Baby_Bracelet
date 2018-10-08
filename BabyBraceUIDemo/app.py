@@ -10,6 +10,8 @@ import os
 
 from dummy_data import DummyTime, DummyHeartBeat
 
+# Start pi_duino script & write output to file
+os.system("./pi_duino.py > output.txt&")
 app = dash.Dash()
 
 colors = {
@@ -62,7 +64,6 @@ app.layout = html.Div(style={'backgroundColor': colors['background']},
 ])
 
 if __name__ == '__main__':
-    os.system(./pi_arduino.py >> out.txt)
     parser=argparse.ArgumentParser()
     parser.add_argument('--host', help='Address to host server')
     parser.add_argument('--port', help='Port of host server')
