@@ -4,6 +4,7 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objs as go
+import sys
 
 from dummy_data import DummyTime, DummyHeartBeat
 
@@ -59,4 +60,7 @@ app.layout = html.Div(style={'backgroundColor': colors['background']},
 ])
 
 if __name__ == '__main__':
-    app.run_server(debug=True, host='0.0.0.0')
+    if len(sys.argv) > 1:
+        app.run_server(debug=True, port=sys.argv[1])
+    else:
+        app.run_server(debug=True)
