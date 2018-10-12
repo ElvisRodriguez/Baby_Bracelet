@@ -8,9 +8,10 @@ def create_timestamp():
 	time_stamp['day'] = current_time.day
 	time_stamp['hour'] = current_time.hour
 	time_stamp['min'] = current_time.minute
+	time_stamp['sec'] = current_time.second
 	return time_stamp
 
-def format_timestamp(time_stamp):
+def format_timestamp(time_stamp=create_timestamp()):
 	month = time_stamp['month'] if time_stamp['month'] > 9 else '0{MM}'.format(
 		MM=time_stamp['month']
 	)
@@ -23,5 +24,18 @@ def format_timestamp(time_stamp):
 	minute = time_stamp['min'] if time_stamp['min'] > 9 else '0{mm}'.format(
 		mm=time_stamp['min']
 	)
-	return '{YY}/{MM}/{DD} {HH}:{mm}'.format(YY=time_stamp['year'], MM=month,
-											 DD=day, HH=hour, mm=minute)
+	second = time_stamp['sec'] if time_stamp['sec'] > 9 else '0{ss}'.format(
+		ss=time_stamp['sec']
+	)
+	return '{YY}/{MM}/{DD} {HH}:{mm}:{ss}'.format(YY=time_stamp['year'],
+												  MM=month, DD=day, HH=hour,
+												  mm=minute, ss=second)
+
+def current_date(time_stamp=create_timestamp()):
+	month = time_stamp['month'] if time_stamp['month'] > 9 else '0{MM}'.format(
+		MM=time_stamp['month']
+	)
+	day = time_stamp['day'] if time_stamp['day'] > 9 else '0{DD}'.format(
+		DD=time_stamp['day']
+	)
+	return '{YY}/{MM}/{DD}'.format(YY=time_stamp['year'], MM=month, DD=day)
