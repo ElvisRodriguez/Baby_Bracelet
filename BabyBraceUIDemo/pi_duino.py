@@ -1,30 +1,37 @@
-#!/usr/bin/env python
+import random
 import serial
-
-import helper_duino
+import time
 from time_stamp import *
 
 def create_serial_obj(port, rate):
 	serial_obj = serial.Serial(port,rate)
 	return serial_obj
 
-def write_serial_values(serial_obj):
+def create_fake_value():
+	while True:
+		input_value = random.randint(80, 160)
+		time_stamp = create_timestamp()
+		time_stamp = format_timestamp(time_stamp)
+		time_stamp = time_stamp.split()
+		value_pair = [input_value, time_stamp[1]]
+		yield value_pair
+
+def retrieve_serial_value(serial_obj):
 	serial_obj.flushInput()
-	data = []
-	while len(data) < 60:
+	while True:
 		if serial_obj.inWaiting() > 0:
 			input_value = serial_obj.readline()
 			try:
 				input_value = int(input_value)
+				time_stamp = create_timestamp()
+				time_stamp = format_timestamp(time_stamp)
+				value_pair = [input_value, time_stamp]
+				yield value_pair
 			except ValueError:
-				input_value = None
-			time_stamp = create_timestamp()
-			time_stamp = format_timestamp(time_stamp)
-			if input_value is not None:
-				value_pair = helper_duino.format_value([input_value, time_stamp])
-			data.append(value_pair)
-	helper_duino.write_output(data)
+				continue
 
 if __name__ == '__main__':
 	serial_obj = create_serial_obj(port='/dev/ttyACM0', rate=9600)
-	write_serial_values(serial_obj)
+	sensor_data = retrieve_serial_value(serial_obj)
+	while True:
+		print(sensor_data.__next__())

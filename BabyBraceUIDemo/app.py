@@ -1,22 +1,30 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-# from concurrent.futures import ThreadPoolExecutor
+import collections
 import dash
+from dash.dependencies import Output, Event
 import dash_core_components as dcc
 import dash_html_components as html
+import plotly
 import plotly.graph_objs as go
+import time
 
-import helper_duino
-from time_stamp import current_date
+from time_stamp import current_date, current_hour
 import pi_duino
 
-def make_layout():
-    colors = {
-        'background': '#111111',
-        'text': '#7FDBFF'
-    }
-    return html.Div(style = {'backgroundColor': colors['background']},
+
+colors = {
+    'background': '#111111',
+    'text': '#7FDBFF'
+}
+
+X = collections.deque(maxlen=30)
+Y = collections.deque(maxlen=30)
+
+app = dash.Dash(__name__)
+
+app.layout = html.Div(style = {'backgroundColor': colors['background']},
                       children = [
     html.H1(children = 'Baby Bracelet',
             style = {
@@ -31,29 +39,48 @@ def make_layout():
     }),
 
     dcc.Graph(
-        figure = go.Figure(
-            data = [
-                go.Scatter(
-                    x = helper_duino.read_data_values()[0],
-                    y = helper_duino.read_data_values()[1],
-                    mode = 'lines',
-                    name = 'Rate'
-                )
-            ],
-            layout = go.Layout(
-                title = current_date(),
-                xaxis = dict(title = 'Time'),
-                yaxis = dict(title = 'Heart Rate'),
-                showlegend = True,
-                legend = go.layout.Legend(
-                    x = 0,
-                    y = 2.0
-            ),
-            ),
-        ),
+        id='live-graph',
+        animate=True,
         style = {'height': 400},
+    ),
+
+    dcc.Interval(
+        id='graph-update',
+        interval=1000
     )
+
 ])
+
+@app.callback(Output('live-graph', 'figure'),
+              events=[Event('graph-update', 'interval')])
+def update_graph_scatter():
+    #uncomment these two lines
+    #serial_obj = create_serial_obj(port='/dev/ttyACM0', rate=9600)
+    #sensor_data = pi_duino.retrieve_serial_value(serial_obj)
+    sensor_data = pi_duino.create_fake_value() #comment this line
+    sensor_data = sensor_data.__next__()
+    X.append(sensor_data[1])
+    Y.append(sensor_data[0])
+
+    data = go.Scatter(
+        x = list(X),
+        y = list(Y),
+        mode = 'lines',
+        name = 'Rate'
+    )
+
+    layout = go.Layout(
+        title = current_date(),
+        xaxis = dict(title='Time'),
+        yaxis = dict(title='Heart Rate', range=[min(Y), max(Y)]),
+        showlegend = True,
+        legend = go.layout.Legend(
+            x = 0,
+            y = 2.0
+        ),
+    )
+    return {'data': [data], 'layout' : layout}
+
 
 def run_service(app):
     parser = argparse.ArgumentParser()
@@ -70,10 +97,5 @@ def run_service(app):
         app.run_server(debug=True)
 
 
-app = dash.Dash(__name__)
-
-app.layout = make_layout
-
 if __name__ == '__main__':
-    pi_duino.write_serial_values()
     run_service(app)

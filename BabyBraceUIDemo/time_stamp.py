@@ -39,3 +39,15 @@ def current_date(time_stamp=create_timestamp()):
 		DD=time_stamp['day']
 	)
 	return '{YY}/{MM}/{DD}'.format(YY=time_stamp['year'], MM=month, DD=day)
+
+def current_hour(time_stamp=create_timestamp()):
+	hour = time_stamp['hour'] if time_stamp['hour'] > 9 else '0{HH}'.format(
+		HH=time_stamp['hour']
+	)
+	minute = time_stamp['min'] if time_stamp['min'] > 9 else '0{mm}'.format(
+		mm=time_stamp['min']
+	)
+	second = time_stamp['sec'] if time_stamp['sec'] > 9 else '0{ss}'.format(
+		ss=time_stamp['sec']
+	)
+	return '{HH}:{mm}:{ss}'.format(HH=hour, mm=minute, ss=second)
