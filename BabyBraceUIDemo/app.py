@@ -46,7 +46,7 @@ app.layout = html.Div(style = {'backgroundColor': colors['background']},
 
     dcc.Interval(
         id='graph-update',
-        interval=1000
+        interval=1*1000
     )
 
 ])
@@ -55,7 +55,7 @@ app.layout = html.Div(style = {'backgroundColor': colors['background']},
               events=[Event('graph-update', 'interval')])
 def update_graph_scatter():
     #uncomment these two lines
-    #serial_obj = create_serial_obj(port='/dev/ttyACM0', rate=9600)
+    #serial_obj = pi_duino.create_serial_obj(port='/dev/ttyACM0', rate=9600)
     #sensor_data = pi_duino.retrieve_serial_value(serial_obj)
     sensor_data = pi_duino.create_fake_value() #comment this line
     sensor_data = sensor_data.__next__()
@@ -65,12 +65,12 @@ def update_graph_scatter():
     data = go.Scatter(
         x = list(X),
         y = list(Y),
-        mode = 'lines',
+        mode = 'lines+markers',
         name = 'Rate'
     )
 
     layout = go.Layout(
-        title = current_date(),
+        title = 'Latest Heart Rate: {hr}'.format(hr=Y[-1]),
         xaxis = dict(title='Time'),
         yaxis = dict(title='Heart Rate', range=[min(Y), max(Y)]),
         showlegend = True,
