@@ -8,7 +8,7 @@ import dash_html_components as html
 import plotly.graph_objs as go
 
 from time_stamp import current_hour
-import pi_duino
+import fake_duino
 
 X = collections.deque(maxlen=30)
 Y = collections.deque(maxlen=30)
@@ -33,9 +33,7 @@ app.layout = html.Div(
                      component_property='children'),
               events=[Event('data-update', 'interval')])
 def update_all_data():
-    serial_obj = pi_duino.create_serial_obj(port='/dev/ttyACM0', rate=9600)
-    sensor_data = pi_duino.retrieve_serial_value(serial_obj)
-    #sensor_data = pi_duino.create_fake_value()
+    sensor_data = fake_duino.create_fake_value()
     sensor_data = sensor_data.__next__()
     X.append(sensor_data[0])
     Y.append(sensor_data[1])
@@ -50,4 +48,4 @@ def update_all_data():
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=True, port=5000)

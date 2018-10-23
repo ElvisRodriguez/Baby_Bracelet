@@ -1,3 +1,9 @@
+'''
+Host Application for Atawear (Baby Bracelet) Project.
+'''
+# TODO(Elvis): Separate inline css to the external 'assets' folder
+# TODO(Elvis): Add docstrings to describe methods
+
 # -*- coding: utf-8 -*-
 
 import argparse
@@ -54,10 +60,9 @@ app.layout = html.Div(style = {'backgroundColor': colors['background']},
 @app.callback(Output('live-graph', 'figure'),
               events=[Event('graph-update', 'interval')])
 def update_graph_scatter():
-    #uncomment these two lines
     #serial_obj = pi_duino.create_serial_obj(port='/dev/ttyACM0', rate=9600)
     #sensor_data = pi_duino.retrieve_serial_value(serial_obj)
-    sensor_data = pi_duino.create_fake_value() #comment this line
+    sensor_data = pi_duino.create_fake_value()
     sensor_data = sensor_data.__next__()
     X.append(sensor_data[1])
     Y.append(sensor_data[0])
