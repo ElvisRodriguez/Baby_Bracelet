@@ -1,0 +1,17 @@
+#graph-app {
+  background-color: #111111;
+}
+
+#main-title {
+  text-align: center;
+  color: #7FDBFF;
+}
+
+#sub-title {
+  text-align: center;
+  color: #7FDBFF;
+}
+
+#live-graph {
+  height: 400;
+}

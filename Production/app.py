@@ -1,7 +1,6 @@
 '''
 Host Application for Atawear (Baby Bracelet) Project.
 '''
-# TODO(Elvis): Separate inline css to the external 'assets' folder
 # TODO(Elvis): Add docstrings to describe methods
 
 # -*- coding: utf-8 -*-
@@ -20,34 +19,27 @@ from time_stamp import current_date, current_hour
 import pi_duino
 
 
-colors = {
-    'background': '#111111',
-    'text': '#7FDBFF'
-}
-
 X = collections.deque(maxlen=30)
 Y = collections.deque(maxlen=30)
 
+
 app = dash.Dash(__name__)
 
-app.layout = html.Div(style = {'backgroundColor': colors['background']},
+app.layout = html.Div(id='graph-app',
                       children = [
-    html.H1(children = 'Baby Bracelet',
-            style = {
-            'textAlign': 'center',
-            'color': colors['text']
-        }),
+    html.H1(
+        id='main-title',
+        children = 'Baby Bracelet'
+    ),
 
-    html.Div(children = 'Graph of Arduino Heart Sensor Data',
-             style = {
-             'textAlign': 'center',
-             'color': colors['text']
-    }),
+    html.Div(
+        id = 'sub-title',
+        children = 'Graph of Arduino Heart Sensor Data'
+    ),
 
     dcc.Graph(
         id='live-graph',
         animate=True,
-        style = {'height': 400},
     ),
 
     dcc.Interval(

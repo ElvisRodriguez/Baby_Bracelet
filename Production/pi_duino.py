@@ -51,6 +51,19 @@ def retrieve_serial_value(serial_obj):
 			except ValueError:
 				continue
 
+def create_fake_value():
+	'''
+		Mock method of retrieve_serial_value() use for testing only.
+	'''
+	while True:
+		input_value = random.randint(80, 160)
+		time_stamp = create_timestamp()
+		time_stamp = format_timestamp(time_stamp)
+		time_stamp = time_stamp.split()
+		value_pair = [input_value, time_stamp[1]]
+		yield value_pair
+
+
 if __name__ == '__main__':
 	# Driver code to test if data is being accurately read from the sensor.
 	serial_obj = create_serial_obj(port=PORT, rate=RATE)
