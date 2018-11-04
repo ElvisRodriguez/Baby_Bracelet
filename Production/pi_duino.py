@@ -5,7 +5,7 @@ Module to extract data from ArduinoUNO's heartbeat sensor.
 import random
 import serial
 import time
-from time_stamp import *
+from time_stamp import TimeStamp
 
 PORT = '/dev/ttyACM0'
 RATE = 9600
@@ -44,8 +44,8 @@ def retrieve_serial_value(serial_obj):
 			input_value = serial_obj.readline()
 			try:
 				input_value = int(input_value)
-				time_stamp = create_timestamp()
-				time_stamp = current_hour(time_stamp)
+				time_stamp = TimeStamp('EST')
+				time_stamp = time_stamp.current_hour()
 				value_pair = [input_value, time_stamp]
 				yield value_pair
 			except ValueError:
@@ -57,10 +57,9 @@ def create_fake_value():
 	'''
 	while True:
 		input_value = random.randint(80, 160)
-		time_stamp = create_timestamp()
-		time_stamp = format_timestamp(time_stamp)
-		time_stamp = time_stamp.split()
-		value_pair = [input_value, time_stamp[1]]
+		time_stamp = TimeStamp('EST')
+		time_stamp = time_stamp.current_hour()
+		value_pair = [input_value, time_stamp]
 		yield value_pair
 
 

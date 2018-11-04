@@ -15,7 +15,6 @@ import plotly
 import plotly.graph_objs as go
 import time
 
-from time_stamp import current_date, current_hour
 import pi_duino
 
 
@@ -52,9 +51,9 @@ app.layout = html.Div(id='graph-app',
 @app.callback(Output('live-graph', 'figure'),
               events=[Event('graph-update', 'interval')])
 def update_graph_scatter():
-    #serial_obj = pi_duino.create_serial_obj(port='/dev/ttyACM0', rate=9600)
-    #sensor_data = pi_duino.retrieve_serial_value(serial_obj)
-    sensor_data = pi_duino.create_fake_value()
+    serial_obj = pi_duino.create_serial_obj(port='/dev/ttyACM0', rate=9600)
+    sensor_data = pi_duino.retrieve_serial_value(serial_obj)
+    #sensor_data = pi_duino.create_fake_value()
     sensor_data = sensor_data.__next__()
     X.append(sensor_data[1])
     Y.append(sensor_data[0])
