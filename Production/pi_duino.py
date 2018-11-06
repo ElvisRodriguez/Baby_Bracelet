@@ -5,26 +5,26 @@ Module to extract data from ArduinoUNO's heartbeat sensor.
 import random
 import serial
 import time
+
 from time_stamp import TimeStamp
 
 PORT = '/dev/ttyACM0'
 RATE = 9600
 
-# TODO(Joel): Check if Args description of create_serial_obj() method is accurate
-def create_serial_obj(port, rate):
+def create_serial_obj(port, rate=9600):
 	'''
 		Description:
 			Creates a Serial object.
 		Args:
-			port: String representing the port of the ArduinoUNO's heartbeat
-				  data.
-			rate: Integer representing that rate at which data is serialized.
+			port: String representing the device name dependent on OS.
+			rate (optional): Integer representing the Baud rate of serial_obj.
 		Exceptions Raised:
-			Undefined.
+			ValueError: Raised when rate is out of range.
+			SerialException: Raised when port cannot be found and/or configured.
 		Returns:
 			A Serial object with specified port and rate.
 	'''
-	serial_obj = serial.Serial(port,rate)
+	serial_obj = serial.Serial(port=port, baudrate=rate)
 	return serial_obj
 
 def retrieve_serial_value(serial_obj):
@@ -45,7 +45,7 @@ def retrieve_serial_value(serial_obj):
 			try:
 				input_value = int(input_value)
 				time_stamp = TimeStamp('EST')
-				time_stamp = time_stamp.current_hour()
+				time_stamp = time_stamp.time()
 				value_pair = [input_value, time_stamp]
 				yield value_pair
 			except ValueError:
@@ -58,7 +58,7 @@ def create_fake_value():
 	while True:
 		input_value = random.randint(80, 160)
 		time_stamp = TimeStamp('EST')
-		time_stamp = time_stamp.current_hour()
+		time_stamp = time_stamp.time()
 		value_pair = [input_value, time_stamp]
 		yield value_pair
 

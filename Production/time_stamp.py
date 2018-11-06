@@ -1,34 +1,35 @@
 '''
 Library to extract formatted timestamps using Python3's builtin datetime module.
 '''
-
 import datetime
 
 class TimeStamp:
+	# TODO (Elvis): Add class docstring for TimeStamp class
 	def __init__(self, tz='UTC'):
 		self._tz = tz
 		self._timezones = dict()
 
 	def _timezone_offsets(self):
+		# TODO (Elvis): Add method docstring for TimeStamp._timezone_offsets() method
 		self._timezones['UTC'] = 0
-		self._timezones['AST'] = 3
-		self._timezones['EST'] = 4
-		self._timezones['CST'] = 5
-		self._timezones['MST'] = 6
-		self._timezones['PST'] = 7
-		self._timezones['AKST'] = 8
-		self._timezones['HAST'] = 9
+		self._timezones['AST'] = 4
+		self._timezones['EST'] = 5
+		self._timezones['CST'] = 6
+		self._timezones['MST'] = 7
+		self._timezones['PST'] = 8
+		self._timezones['AKST'] = 9
+		self._timezones['HAST'] = 10
 
 	def _create_timestamp(self):
 		'''
 			Description:
-				Create a dictionary representation of a timestamp
+				Create a dictionary representing datetime attributes
 			Args:
 				None
 			Exceptions Raised:
 				None
 			Returns:
-				A dictionary of time stamp attributes
+				A dictionary of datetime attributes
 		'''
 		time_stamp = dict()
 		self._timezone_offsets()
@@ -47,12 +48,12 @@ class TimeStamp:
 		time_stamp['sec'] = current_time.second
 		return time_stamp
 
-	def full_timestamp(self):
+	def timestamp(self):
 		'''
 			Description:
 				Creates a time stamp string from timestamp attribute
 			Args:
-				time_stamp: Dictionary representation of a timestamp
+				None
 			Exceptions Raised:
 				None
 			Returns:
@@ -79,7 +80,7 @@ class TimeStamp:
 													  MM=month, DD=day, HH=hour,
 													  mm=minute, ss=second)
 
-	def current_day(self):
+	def date(self):
 		'''
 			Description:
 				Retrieves the 'date' portion from a complete timestamp string
@@ -90,21 +91,21 @@ class TimeStamp:
 			Returns:
 				A formatted string representing a timestamp of the current date
 		'''
-		day = self.full_timestamp()
-		day = day.split()
-		return day[0]
+		time_stamp = self.timestamp()
+		time_stamp = time_stamp.split()
+		return time_stamp[0]
 
-	def current_hour(self):
+	def time(self):
 		'''
 			Description:
-				Retrieves the 'hour' portion from a complete timestamp string
+				Retrieves the 'time' portion from a complete timestamp string
 			Args:
 				None
 			Exceptions Raised:
 				None
 			Returns:
-				A formatted string representing a timestamp of the current hour
+				A formatted string representing a timestamp of the current time
 		'''
-		hour = self.full_timestamp()
-		hour = hour.split()
-		return hour[1]
+		time_stamp = self.timestamp()
+		time_stamp = time_stamp.split()
+		return time_stamp[1]
