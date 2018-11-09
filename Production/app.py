@@ -27,12 +27,12 @@ app.layout = html.Div(id='graph-app',
                       children = [
     html.H1(
         id='main-title',
-        children = 'Baby Bracelet'
+        children = 'Atawear'
     ),
 
     html.Div(
         id = 'sub-title',
-        children = 'Graph of Arduino Heart Sensor Data'
+        children = 'Infant\'s Heart Rate Data'
     ),
 
     dcc.Graph(
@@ -67,7 +67,7 @@ def update_graph_scatter():
     layout = go.Layout(
         title = 'Latest Heart Rate: {hr}'.format(hr=Y[-1]),
         xaxis = dict(title='Time'),
-        yaxis = dict(title='Heart Rate', range=[min(Y), max(Y)]),
+        yaxis = dict(title='Heart Rate', range=[80, 160]),
         showlegend = True,
         legend = go.layout.Legend(
             x = 0,
