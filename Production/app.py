@@ -21,6 +21,7 @@ Y = collections.deque(maxlen=30)
 
 
 app = dash.Dash(__name__)
+server = app.server
 
 app.layout = html.Div(id='graph-app',
                       children = [
