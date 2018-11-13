@@ -11,12 +11,12 @@
   @version  V1.0
   @date  2015-12-24
 */
-#define heartratePin A1
+#define heartratePin A0
 #include "DFRobot_Heartrate.h"
 DFRobot_Heartrate heartrate(DIGITAL_MODE); ///< ANALOG_MODE or DIGITAL_MODE
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
 }
 
 void loop() {
