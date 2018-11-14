@@ -1,12 +1,32 @@
 h1 {color:red;
+
 font-style:italic;
+text-align:center;
 font-weight:bold;
+
 }
-#description{background-color:yellow;
-font-style:italic;
+h2{color:red;
+font-style:oblique;
+text-align:center;
+font-weight:bolder;}
+h3{color:red;
+font-style:oblique;
+text-align:center;
+font-weight:bolder;}
+h4{color:red;
+font-style:oblique;
+text-align:center;
+font-weight:bolder;}
+
+#description{
+font-style:initial;
 color:blue;
 font-weight:bold;
 }
+body{
+  background-color:greenyellow;
+}
+
 ul{color:green;
 font-style:italic;
 font-weight:bold;}
