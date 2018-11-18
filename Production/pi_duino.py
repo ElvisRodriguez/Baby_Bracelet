@@ -56,7 +56,7 @@ def create_fake_value():
 		Mock method of retrieve_serial_value() use for testing only.
 	'''
 	while True:
-		input_value = random.randint(80, 160)
+		input_value = random.randint(110, 130)
 		time_stamp = TimeStamp('EST')
 		time_stamp = time_stamp.time()
 		value_pair = [input_value, time_stamp]
