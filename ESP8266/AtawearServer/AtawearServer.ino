@@ -1,3 +1,5 @@
+#include <Adafruit_ESP8266.h>
+
 /*
    Copyright (c) 2015, Majenko Technologies
    All rights reserved.
