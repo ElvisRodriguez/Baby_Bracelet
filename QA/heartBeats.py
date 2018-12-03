@@ -7,6 +7,8 @@
 
 # Modified By: @Atawear Team
 
+#piZeroW: ssh pi@192.168.137.247 or pi@atawear
+
 from collections import deque
 import time
 
