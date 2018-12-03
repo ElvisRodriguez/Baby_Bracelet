@@ -14,25 +14,25 @@ import time
 
 import Adafruit_ADS1x15
 
-# Globals
-ADC = Adafruit_ADS1x15.ADS1015()
-GAIN = 2/3
-CURRENT_STATE = 0
-THRESHOLD = 525  # mid point in the waveform
-PEAK = 512
-TROUGTROUGH = 512
-TIME_IN_MILLISECS = 0
-TIME_OF_LAST_HEARTBEAT = 0
-FIRST_HEARTBEAT = True
-SECOND_HEARTBEAT = False
-PULSE = False
-INTER_BEAT_INTERVAL = 600
-RATE = deque([0 for i in range(10)], maxlen=10)
-AMPLITUDE = 100
-LAST_TIME = int(time.time()*1000)
 
 
 def read_heart_rate():
+    ADC = Adafruit_ADS1x15.ADS1015()
+    GAIN = 2/3
+    CURRENT_STATE = 0
+    THRESHOLD = 525  # mid point in the waveform
+    PEAK = 512
+    TROUGTROUGH = 512
+    TIME_IN_MILLISECS = 0
+    TIME_OF_LAST_HEARTBEAT = 0
+    FIRST_HEARTBEAT = True
+    SECOND_HEARTBEAT = False
+    PULSE = False
+    INTER_BEAT_INTERVAL = 600
+    RATE = deque([0 for i in range(10)], maxlen=10)
+    AMPLITUDE = 100
+    LAST_TIME = int(time.time()*1000)
+    
     while True:
         Signal = ADC.read_adc(0, gain=GAIN)   #TODO: Select the correct ADC channel. A0 currently selected
         CURRENT_TIME = int(time.time()*1000)
