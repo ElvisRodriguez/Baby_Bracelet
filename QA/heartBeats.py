@@ -1,102 +1,95 @@
 # Simple heart beat reader for Raspberry pi using ADS1x15 family of ADCs and a pulse sensor - http://pulsesensor.com/.
 # The code borrows heavily from Tony DiCola's examples of using ADS1x15 with
-# Raspberry pi and WorldFamousElectronics's code for PulseSensor_Amped_Arduino
+# Raspberry pi and WorldFamousElectronics's code for PULSESensor_Amped_Arduino
 
 # Author: Udayan Kumar
 # License: Public Domain
 
+# Modified By: @Atawear Team
+
 import time
-# Import the ADS1x15 module.
+
 import Adafruit_ADS1x15
+
+# Globals
+ADC = Adafruit_ADS1x15.ADS1015()
+GAIN = 0
+CURRENT_STATE = 0
+THRESHOLD = 525  # mid point in the waveform
+PEAK = 512
+TROUGTROUGH = 512
+TIME_IN_MILLISECS = 0
+TIME_OF_LAST_HEARTBEAT = 0
+FIRST_HEARTBEAT = True
+SECOND_HEARTBEAT = False
+PULSE = False
+INTER_BEAT_INTERVAL = 600
+RATE = [0]*10
+AMPLITUDE = 100
+LAST_TIME = int(time.time()*1000)
 
 
 if __name__ == '__main__':
-
-    adc = Adafruit_ADS1x15.ADS1015()
-    # initialization
-    GAIN = 2/3
-    curState = 0
-    thresh = 525  # mid point in the waveform
-    P = 512
-    T = 512
-    stateChanged = 0
-    sampleCounter = 0
-    lastBeatTime = 0
-    firstBeat = True
-    secondBeat = False
-    Pulse = False
-    IBI = 600
-    rate = [0]*10
-    amp = 100
-
-    lastTime = int(time.time()*1000)
-
-    # Main loop. use Ctrl-c to stop the code
     while True:
-        # read from the ADC
-        Signal = adc.read_adc(0, gain=GAIN)   #TODO: Select the correct ADC channel. I have selected A0 here
-        curTime = int(time.time()*1000)
+        Signal = ADC.read_adc(0, gain=GAIN)   #TODO: Select the correct ADC channel. A0 currently selected
+        CURRENT_TIME = int(time.time()*1000)
 
-        sampleCounter += curTime - lastTime;      #                   # keep track of the time in mS with this variable
-        lastTime = curTime
-        N = sampleCounter - lastBeatTime;     #  # monitor the time since the last beat to avoid noise
-        #print N, Signal, curTime, sampleCounter, lastBeatTime
+        TIME_IN_MILLISECS += CURRENT_TIME - LAST_TIME
+        LAST_TIME = CURRENT_TIME
+        TIME_SINCE_LAST_HEARTBEAT = TIME_IN_MILLISECS - TIME_OF_LAST_HEARTBEAT
 
-        ##  find the peak and trough of the pulse wave
-        if Signal < thresh and N > (IBI/5.0)*3.0 :  #       # avoid dichrotic noise by waiting 3/5 of last IBI
-            if Signal < T :                        # T is the trough
-              T = Signal;                         # keep track of lowest point in pulse wave
+        if Signal < THRESHOLD and TIME_SINCE_LAST_HEARTBEAT > (INTER_BEAT_INTERVAL/5.0)*3.0: # avoid dichrotic noise by waiting 3/5 of last INTER_BEAT_INTERVAL
+            if Signal < TROUGH:
+              TROUGH = Signal # keep track of lowest point in pulse wave
 
-        if Signal > thresh and  Signal > P:           # thresh condition helps avoid noise
-            P = Signal;                             # P is the peak
-                                                # keep track of highest point in pulse wave
+        if Signal > THRESHOLD and  Signal > PEAK: # THRESHOLD condition helps avoid noise
+            PEAK = Signal # keep track of highest point in pulse wave
 
-          #  NOW IT'S TIME TO LOOK FOR THE HEART BEAT
-          # signal surges up in value every time there is a pulse
-        if N > 250 :                                   # avoid high frequency noise
-            if  (Signal > thresh) and  (Pulse == False) and  (N > (IBI/5.0)*3.0)  :
-              Pulse = True;                               # set the Pulse flag when we think there is a pulse
-              IBI = sampleCounter - lastBeatTime;         # measure time between beats in mS
-              lastBeatTime = sampleCounter;               # keep track of time for next pulse
+        # signal surges up in value every time there is a pulse
+        if TIME_SINCE_LAST_HEARTBEAT > 250: # avoid high frequency noise
+            if (Signal > THRESHOLD) and (PULSE == False) and (TIME_SINCE_LAST_HEARTBEAT > INTER_BEAT_INTERVAL/5*3):
+              PULSE = True
+              INTER_BEAT_INTERVAL = TIME_IN_MILLISECS - TIME_OF_LAST_HEARTBEAT
+              TIME_OF_LAST_HEARTBEAT = TIME_IN_MILLISECS
 
-              if secondBeat :                        # if this is the second beat, if secondBeat == TRUE
-                secondBeat = False;                  # clear secondBeat flag
-                for i in range(0,10):             # seed the running total to get a realisitic BPM at startup
-                  rate[i] = IBI;
+              if SECOND_HEARTBEAT:
+                SECOND_HEARTBEAT = False
+                for i in range(0,10): # seed the running total to get a realisitic BPM at startup
+                  RATE[i] = INTER_BEAT_INTERVAL
 
-              if firstBeat :                        # if it's the first time we found a beat, if firstBeat == TRUE
-                firstBeat = False;                   # clear firstBeat flag
-                secondBeat = True;                   # set the second beat flag
-                continue                              # IBI value is unreliable so discard it
+              if FIRST_HEARTBEAT:
+                FIRST_HEARTBEAT = False
+                SECOND_HEARTBEAT = True
+                continue # INTER_BEAT_INTERVAL value is unreliable so discard it
 
 
-              # keep a running total of the last 10 IBI values
-              runningTotal = 0;                  # clear the runningTotal variable
+              # keep a running total of the last 10 INTER_BEAT_INTERVAL values
+              runningTotal = 0
 
-              for i in range(0,9):                # shift data in the rate array
-                rate[i] = rate[i+1];                  # and drop the oldest IBI value
-                runningTotal += rate[i];              # add up the 9 oldest IBI values
+              for i in range(0,9):
+                RATE[i] = RATE[i+1]
+                runningTotal += RATE[i]
 
-              rate[9] = IBI;                          # add the latest IBI to the rate array
-              runningTotal += rate[9];                # add the latest IBI to runningTotal
-              runningTotal //= 10;                     # average the last 10 IBI values
-              BPM = 60000//runningTotal;               # how many beats can fit into a minute? that's BPM!
+              RATE[9] = INTER_BEAT_INTERVAL
+              runningTotal += RATE[9]
+              runningTotal //= 10
+              BPM = 60000//runningTotal
               print('BPM: {}'.format(BPM))
 
-        if Signal < thresh and Pulse == True :   # when the values are going down, the beat is over
-            Pulse = False;                         # reset the Pulse flag so we can do it again
-            amp = P - T;                           # get amplitude of the pulse wave
-            thresh = amp//2 + T;                    # set thresh at 50% of the amplitude
-            P = thresh;                            # reset these for next time
-            T = thresh;
+        if Signal < THRESHOLD and PULSE == True: # when the values are going down, the beat is over
+            PULSE = False
+            AMPLITUDE = PEAK - TROUGH
+            THRESHOLD = AMPLITUDE//2 + TROUGH
+            PEAK = THRESHOLD
+            TROUGH = THRESHOLD
 
-        if N > 2500 :                          # if 2.5 seconds go by without a beat
-            thresh = 512;                          # set thresh default
-            P = 512;                               # set P default
-            T = 512;                               # set T default
-            lastBeatTime = sampleCounter;          # bring the lastBeatTime up to date
-            firstBeat = True;                      # set these to avoid noise
-            secondBeat = False;                    # when we get the heartbeat back
+        if TIME_SINCE_LAST_HEARTBEAT > 2500:
+            THRESHOLD = 512
+            PEAK = 512
+            TROUGH = 512
+            TIME_OF_LAST_HEARTBEAT = TIME_IN_MILLISECS
+            FIRST_HEARTBEAT = True
+            SECOND_HEARTBEAT = False
             print("no beats found")
 
         time.sleep(0.005)
