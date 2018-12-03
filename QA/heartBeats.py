@@ -13,7 +13,7 @@ import Adafruit_ADS1x15
 
 # Globals
 ADC = Adafruit_ADS1x15.ADS1015()
-GAIN = 0
+GAIN = 2/3
 CURRENT_STATE = 0
 THRESHOLD = 525  # mid point in the waveform
 PEAK = 512
