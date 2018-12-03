@@ -79,14 +79,14 @@ if __name__ == '__main__':
 
               rate[9] = IBI;                          # add the latest IBI to the rate array
               runningTotal += rate[9];                # add the latest IBI to runningTotal
-              runningTotal /= 10;                     # average the last 10 IBI values
-              BPM = 60000/runningTotal;               # how many beats can fit into a minute? that's BPM!
+              runningTotal //= 10;                     # average the last 10 IBI values
+              BPM = 60000//runningTotal;               # how many beats can fit into a minute? that's BPM!
               print('BPM: {}'.format(BPM))
 
         if Signal < thresh and Pulse == True :   # when the values are going down, the beat is over
             Pulse = False;                         # reset the Pulse flag so we can do it again
             amp = P - T;                           # get amplitude of the pulse wave
-            thresh = amp/2 + T;                    # set thresh at 50% of the amplitude
+            thresh = amp//2 + T;                    # set thresh at 50% of the amplitude
             P = thresh;                            # reset these for next time
             T = thresh;
 
