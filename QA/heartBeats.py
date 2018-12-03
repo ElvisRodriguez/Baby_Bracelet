@@ -7,6 +7,7 @@
 
 # Modified By: @Atawear Team
 
+from collections import deque
 import time
 
 import Adafruit_ADS1x15
@@ -24,12 +25,12 @@ FIRST_HEARTBEAT = True
 SECOND_HEARTBEAT = False
 PULSE = False
 INTER_BEAT_INTERVAL = 600
-RATE = [0]*10
+RATE = deque([0 for i in range(10)], maxlen=10)
 AMPLITUDE = 100
 LAST_TIME = int(time.time()*1000)
 
 
-if __name__ == '__main__':
+def read_heart_rate():
     while True:
         Signal = ADC.read_adc(0, gain=GAIN)   #TODO: Select the correct ADC channel. A0 currently selected
         CURRENT_TIME = int(time.time()*1000)
@@ -54,27 +55,25 @@ if __name__ == '__main__':
 
               if SECOND_HEARTBEAT:
                 SECOND_HEARTBEAT = False
-                for i in range(0,10): # seed the running total to get a realisitic BPM at startup
-                  RATE[i] = INTER_BEAT_INTERVAL
+                RATE.extend([INTER_BEAT_INTERVAL for i in range(10)]) # seed the running total to get a realisitic BPM at startup
 
               if FIRST_HEARTBEAT:
                 FIRST_HEARTBEAT = False
                 SECOND_HEARTBEAT = True
                 continue # INTER_BEAT_INTERVAL value is unreliable so discard it
 
-
               # keep a running total of the last 10 INTER_BEAT_INTERVAL values
-              runningTotal = 0
+              RUNNING_TOTAL = 0
 
-              for i in range(0,9):
-                RATE[i] = RATE[i+1]
-                runningTotal += RATE[i]
+              RATE.popleft()
+              RUNNING_TOTAL = sum(RATE)
 
-              RATE[9] = INTER_BEAT_INTERVAL
-              runningTotal += RATE[9]
-              runningTotal //= 10
-              BPM = 60000//runningTotal
+              RATE.append(INTER_BEAT_INTERVAL)
+              RUNNING_TOTAL += INTER_BEAT_INTERVAL
+              RUNNING_TOTAL //= 10
+              BPM = 60000//RUNNING_TOTAL
               print('BPM: {}'.format(BPM))
+              yield BPM
 
         if Signal < THRESHOLD and PULSE == True: # when the values are going down, the beat is over
             PULSE = False
@@ -92,4 +91,8 @@ if __name__ == '__main__':
             SECOND_HEARTBEAT = False
             print("no beats found")
 
-        time.sleep(0.005)
+
+if __name__ == '__main__':
+    heart_beats = read_heart_rate()
+    while True:
+        print('NEXT: ', next(heart_beats))
