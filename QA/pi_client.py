@@ -2,7 +2,7 @@ import random
 import socket
 
 HOST = socket.getfqdn()
-PORT = 12345
+PORT = 11203
 
 def generate_hb():
     hb = random.randint(80,160)
@@ -14,4 +14,4 @@ hb = generate_hb()
 hb = str(next(hb))
 hb = hb.encode('utf-8')
 client_socket.sendall(hb)
-#client_socket.close()
+client_socket.close()

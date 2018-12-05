@@ -1,7 +1,7 @@
 import socket
 
-HOST = socket.getfqdn()
-PORT = 12345
+HOST = socket.gethostbyname('elvisrodriguez.pythonanywhere.com')
+PORT = 11203
 
 if __name__ == '__main__':
     server_socket = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
