@@ -32,7 +32,7 @@ def read_heart_rate():
     RATE = deque([0 for i in range(10)], maxlen=10)
     AMPLITUDE = 100
     LAST_TIME = int(time.time()*1000)
-    
+
     while True:
         Signal = ADC.read_adc(0, gain=GAIN)   #TODO: Select the correct ADC channel. A0 currently selected
         CURRENT_TIME = int(time.time()*1000)
@@ -97,4 +97,4 @@ def read_heart_rate():
 if __name__ == '__main__':
     heart_beats = read_heart_rate()
     while True:
-        print('NEXT: ', next(heart_beats))
+        next(heart_beats)

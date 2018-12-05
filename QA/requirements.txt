@@ -1,7 +1,0 @@
-In order to use heartBeats.py, you must install the following python package below:
-	adafruit-ads1x15==1.0.1
-
-E.g.
-	- sudo apt-get install python3
-	- sudo apt-get install python3-pip
-	- pip3 install adafruit-ads1x15
