@@ -1,6 +1,6 @@
 import socket
 
-HOST = socket.gethostbyname('elvisrodriguez.pythonanywhere.com')
+HOST = socket.getfqdn()#socket.gethostbyname('elvisrodriguez.pythonanywhere.com')
 PORT = 11203
 
 if __name__ == '__main__':

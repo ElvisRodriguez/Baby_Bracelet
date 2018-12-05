@@ -1,7 +1,7 @@
 import random
 import socket
 
-HOST = socket.getfqdn()
+HOST = socket.gethostbyname('elvisrodriguez.pythonanywhere.com')
 PORT = 11203
 
 def generate_hb():
