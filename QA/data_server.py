@@ -1,7 +1,7 @@
 import socket
 
 HOST = socket.getfqdn()#socket.gethostbyname('elvisrodriguez.pythonanywhere.com')
-PORT = 11203
+PORT = 80
 
 if __name__ == '__main__':
     server_socket = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
@@ -14,4 +14,6 @@ if __name__ == '__main__':
         data = connection.recv(1024)
         data = int(data)
         print('{data} is of type {type}'.format(data=data,type=type(data)))
+        connection.sendall(data.encode('utf-8'))
+        print('Sent {data} back to {addr}'.format(data=data, addr=address))
     connection.close()
