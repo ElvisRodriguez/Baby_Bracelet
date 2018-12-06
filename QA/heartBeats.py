@@ -22,7 +22,7 @@ def read_heart_rate():
     CURRENT_STATE = 0
     THRESHOLD = 525  # mid point in the waveform
     PEAK = 512
-    TROUGTROUGH = 512
+    TROUGH = 512
     TIME_IN_MILLISECS = 0
     TIME_OF_LAST_HEARTBEAT = 0
     FIRST_HEARTBEAT = True
