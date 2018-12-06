@@ -1,7 +1,7 @@
 import socket
 
 HOST = socket.getfqdn()#socket.gethostbyname('elvisrodriguez.pythonanywhere.com')
-PORT = 443
+PORT = 12345
 
 if __name__ == '__main__':
     server_socket = socket.socket(family=socket.AF_INET, type=socket.SOCK_STREAM)
