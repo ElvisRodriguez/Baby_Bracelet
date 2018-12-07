@@ -13,11 +13,10 @@ import flask
 import plotly.graph_objs as go
 
 import md_doc
-import pi_duino
 import render
 
-TIMESTAMPS = collections.deque(maxlen=30)
-HEART_RATES = collections.deque(maxlen=30)
+TIMESTAMPS = collections.deque(iterable=[80], maxlen=30)
+HEART_RATES = collections.deque(iterable=['00:00:00'], maxlen=30)
 
 server = flask.Flask(__name__)
 app = dash.Dash(__name__, server=server)
@@ -51,11 +50,6 @@ app.layout = html.Div(id = 'graph-app',
 @app.callback(Output('live-graph', 'figure'),
               events=[Event('graph-update', 'interval')])
 def update_graph_scatter():
-    sensor_data = pi_duino.create_fake_value()
-    sensor_data = sensor_data.__next__()
-    TIMESTAMPS.append(sensor_data[1])
-    HEART_RATES.append(sensor_data[0])
-
     data = go.Scatter(
         x = list(TIMESTAMPS),
         y = list(HEART_RATES),
@@ -85,7 +79,7 @@ def dash_application():
 
 @server.route('/data', methods=['GET', 'POST'])
 def data_receive():
-    data = flask.request.form.get('heartbeat', '170')
+    data = flask.request.form.get('heartbeat', '80')
     render.render_data(heart_rates=HEART_RATES, timestamps=TIMESTAMPS, data=data)
     return data
 
