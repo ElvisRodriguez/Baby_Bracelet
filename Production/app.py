@@ -14,6 +14,7 @@ import plotly.graph_objs as go
 
 import md_doc
 import pi_duino
+import render
 
 TIMESTAMPS = collections.deque(maxlen=30)
 HEART_RATES = collections.deque(maxlen=30)
@@ -84,7 +85,9 @@ def dash_application():
 
 @server.route('/data', methods=['GET', 'POST'])
 def data_receive():
-    return 'Hello You.'
+    data = flask.request.form['heartbeat']
+    render.render_data(heart_rates=HEART_RATES, timestamps=TIMESTAMPS, data=data)
+
 
 
 if __name__ == '__main__':
