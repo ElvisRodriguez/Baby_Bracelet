@@ -15,8 +15,8 @@ import plotly.graph_objs as go
 import md_doc
 import render
 
-TIMESTAMPS = collections.deque(iterable=[80], maxlen=30)
-HEART_RATES = collections.deque(iterable=['00:00:00'], maxlen=30)
+TIMESTAMPS = collections.deque(iterable=['00:00:00'], maxlen=30)
+HEART_RATES = collections.deque(iterable=[80], maxlen=30)
 
 server = flask.Flask(__name__)
 app = dash.Dash(__name__, server=server)
@@ -61,7 +61,6 @@ def update_graph_scatter():
     )
 
     layout = go.Layout(
-        title = 'Latest Heart Rate: {hr}'.format(hr=HEART_RATES[-1]),
         xaxis = dict(title='Time'),
         yaxis = dict(title='Heart Rate', range=[80, 160]),
         showlegend = False,
@@ -79,9 +78,10 @@ def dash_application():
 
 @server.route('/data', methods=['GET', 'POST'])
 def data_receive():
-    data = flask.request.form.get('heartbeat', '80')
+    data = flask.request.form.get('heartbeat', '-1')
     render.render_data(heart_rates=HEART_RATES, timestamps=TIMESTAMPS, data=data)
-    return data
+    #update_graph_scatter()
+    return flask.render_template('data.html')
 
 
 
