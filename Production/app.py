@@ -85,8 +85,9 @@ def dash_application():
 
 @server.route('/data', methods=['GET', 'POST'])
 def data_receive():
-    data = flask.request.form['heartbeat']
+    data = flask.request.form.get('heartbeat', '170')
     render.render_data(heart_rates=HEART_RATES, timestamps=TIMESTAMPS, data=data)
+    return data
 
 
 
