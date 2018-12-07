@@ -1,5 +1,6 @@
 import random
 import requests
+import time
 
 import heartBeats
 
@@ -18,5 +19,6 @@ if __name__ == '__main__':
         payload = {'heartbeat':str(heart_rate)}
         r = requests.get(URL)
         print('STATUS CODE: ', r.status_code)
-        r = requests.put(URL, data=payload)
+        r = requests.post(URL, data=payload)
         print('SENT HEART RATE OF: ', heart_rate)
+        time.sleep(0.5)
