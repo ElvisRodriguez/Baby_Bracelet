@@ -9,6 +9,7 @@ import dash
 import dash_core_components as dcc
 from dash.dependencies import Output, Event
 import dash_html_components as html
+import flask
 import plotly.graph_objs as go
 
 import md_doc
@@ -17,9 +18,8 @@ import pi_duino
 TIMESTAMPS = collections.deque(maxlen=30)
 HEART_RATES = collections.deque(maxlen=30)
 
-
-app = dash.Dash(__name__)
-server = app.server
+server = flask.Flask(__name__)
+app = dash.Dash(__name__, server=server)
 
 app.layout = html.Div(id = 'graph-app',
                       children = [
@@ -76,6 +76,15 @@ def update_graph_scatter():
         ),
     )
     return {'data': [data], 'layout' : layout}
+
+
+@server.route('/')
+def dash_application():
+    return app.index
+
+@server.route('/data', methods=['GET', 'POST'])
+def data_receive():
+    return 'Hello You.'
 
 
 if __name__ == '__main__':
