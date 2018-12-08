@@ -69,7 +69,7 @@ def update_graph_scatter():
             y = 2.0
         ),
     )
-    return {'data': [data], 'layout' : layout}
+    return {'data': [data], 'uirevision' : True, 'layout' : layout}
 
 
 @server.route('/')
