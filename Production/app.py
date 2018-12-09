@@ -17,6 +17,7 @@ import render
 
 TIMESTAMPS = collections.deque(iterable=['00:00:00'], maxlen=30)
 HEART_RATES = collections.deque(iterable=[80], maxlen=30)
+EXTENDED_HEART_RATE_DATA = collections.deque(maxlen=100)
 
 server = flask.Flask(__name__)
 app = dash.Dash(__name__, server=server)
@@ -33,7 +34,7 @@ app.layout = html.Div(id = 'graph-app',
         children = 'CS310 IoT Project'
     ),
 
-    dcc.Markdown(md_doc.markdown()),
+    dcc.Markdown(md_doc.stringify_file(file_path='assets/template.md')),
 
     dcc.Graph(
         id = 'live-graph',
@@ -78,10 +79,16 @@ def dash_application():
 
 @server.route('/data', methods=['GET', 'POST'])
 def data_receive():
-    data = flask.request.form.get('heartbeat', '-1')
-    render.render_data(heart_rates=HEART_RATES, timestamps=TIMESTAMPS, data=data)
-    #update_graph_scatter()
-    return flask.render_template('data.html')
+    data = flask.request.form.get('heartbeat', '0')
+    try:
+        data = int(data)
+    except ValueError:
+        error_message = 'Received: Bad data.'
+        return error_message
+    render.render_data(heart_rates=HEART_RATES, timestamps=TIMESTAMPS,
+                       data=data, extended_data=EXTENDED_HEART_RATE_DATA)
+    response = 'Recieved: {data}'.format(data=data)
+    return response
 
 
 
