@@ -30,17 +30,14 @@ def send_heartbeat_data(url=URL):
             payload['heartbeat'] = heart_rate
             post_data = requests.post(url, data=payload)
             if post_data.status_code == STATUS_OK:
-                print(
-                      'Sent {data} with status code: {code}'.format(
-                      data=heart_rate, code=post_data.status_code)
-                     )
+                print('Sending: {data} to server'.format(data=heart_rate))
 
 def create_dummy_data():
     '''
     This method creates dummy data for testing purposes only.
     Do not use in production.
     '''
-    value = random.randint(80,160)
+    value = random.randint(95,105)
     while True:
         yield value
 
@@ -64,7 +61,7 @@ if __name__ == '__main__':
     try:
         send_heartbeat_data()
     except RuntimeError:
-        print('Enviornment setup for script is incomplete.')
+        print('Environment setup for script is incomplete.')
         print('Running dummy script instead...')
         time.sleep(0.5)
-        fallback(0)
+        fallback(delay=1)
