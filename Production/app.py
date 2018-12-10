@@ -63,7 +63,7 @@ def update_graph_scatter():
 
     layout = go.Layout(
         xaxis = dict(title='Time'),
-        yaxis = dict(title='Heart Rate', range=[80, 160]),
+        yaxis = dict(title='Heart Rate', range=[1, 160]),
         showlegend = False,
         legend = go.layout.Legend(
             x = 0,
