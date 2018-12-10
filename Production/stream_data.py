@@ -29,8 +29,9 @@ def send_heartbeat_data(url=URL):
             heart_rate = next(heart_rates)
             payload['heartbeat'] = heart_rate
             post_data = requests.post(url, data=payload)
-            if post_data.status_code == STATUS_OK:
-                print('Sending: {data} to server'.format(data=heart_rate))
+            if post_data.status_code != STATUS_OK:
+                print('Error connecting to server...killing...')
+                break
 
 def create_dummy_data():
     '''
