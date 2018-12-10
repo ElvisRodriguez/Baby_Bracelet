@@ -20,7 +20,7 @@ import Adafruit_ADS1x15
 def read_heart_rates():
     ADC = Adafruit_ADS1x15.ADS1015()
     GAIN = 2/3
-    THRESHOLD = 555  # mid point in the waveform
+    THRESHOLD = 525  # mid point in the waveform
     PEAK = 512
     TROUGH = 512
     TIME_IN_MILLISECS = 0
