@@ -12,7 +12,8 @@ import dash_html_components as html
 import flask
 import plotly.graph_objs as go
 
-import md_doc
+import analytics
+#import md_doc
 import render
 
 TIMESTAMPS = collections.deque(iterable=['00:00:00'], maxlen=30)
@@ -34,7 +35,7 @@ app.layout = html.Div(id = 'graph-app',
         children = 'CS310 IoT Project'
     ),
 
-    dcc.Markdown(md_doc.stringify_file(file_path='assets/template.md')),
+    #dcc.Markdown(md_doc.stringify_file(file_path='assets/template.md')),
 
     dcc.Graph(
         id = 'live-graph',
@@ -80,14 +81,14 @@ def dash_application():
 @server.route('/data', methods=['GET', 'POST'])
 def data_receive():
     data = flask.request.form.get('heartbeat', '0')
+    response = ''
     try:
         data = int(data)
+        render.render_data(heart_rates=HEART_RATES, timestamps=TIMESTAMPS,
+                           data=data, extended_data=EXTENDED_HEART_RATE_DATA)
+        response = 'Recieved: {data}'.format(data=data)
     except ValueError:
-        error_message = 'Received: Bad data.'
-        return error_message
-    render.render_data(heart_rates=HEART_RATES, timestamps=TIMESTAMPS,
-                       data=data, extended_data=EXTENDED_HEART_RATE_DATA)
-    response = 'Recieved: {data}'.format(data=data)
+        response = 'Received: Bad data.'
     return response
 
 
