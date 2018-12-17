@@ -2,28 +2,42 @@
 Data Analytics module for determining concerning heart rate patterns.
 '''
 
+import math
+
+
 def average_heartbeat(data):
     return sum(data) // len(data)
 
-def spike_or_dip(data):
-    if len(data) < 50:
-        return 'insufficient data'
+def is_rising(data):
     notification_threshold = len(data) // 5
-    index = 1
-    while index < len(data):
-        count = 0
-        while data[index] < data[index-1] and index < len(data):
+    count = 0
+    for i in range(1, len(data)):
+        if data[i] > data[i-1]:
             count += 1
-            index += 1
-        if count >= notification_threshold:
-            return 'spike'
         else:
             count = 0
-        while data[index] > data[index-1] and index < len(data):
+    if count >= notification_threshold:
+        return True
+    return False
+
+def is_dropping(data):
+    notification_threshold = len(data) // 5
+    count = 0
+    for i in range(1, len(data)):
+        if data[i] < data[i-1]:
             count += 1
-            index += 1
-        if count >= notification_threshold:
-            return 'dip'
         else:
             count = 0
-        index += 1
+    if count >= notification_threshold:
+        return True
+    return False
+
+def heart_rate_variability(interbeat_intervals):
+    N = len(interbeat_intervals)
+    mean_square = []
+    for i in range(1, N):
+        difference = interbeat_intervals[i] - interbeat_intervals[i-1]
+        mean_square.append(difference ** 2)
+    reciprocal = 1 / (number_of_intervals - 1)
+    result = math.sqrt(reciprocal * sum(mean_square))
+    return result
