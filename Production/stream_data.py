@@ -7,7 +7,6 @@ import heartBeats
 
 STATUS_OK = requests.codes.ok
 URL = 'https://elvisrodriguez.pythonanywhere.com/data'
-POST_FIELD = 'heartbeat'
 
 
 def send_heartbeat_data(url=URL):
@@ -23,11 +22,16 @@ def send_heartbeat_data(url=URL):
     '''
     payload = dict()
     get_url = requests.get(url)
-    heart_rates = heartBeats.read_heart_rates()
+    heart_data = heartBeats.read_heart_data()
     while True:
         if get_url.status_code == STATUS_OK:
-            heart_rate = next(heart_rates)
-            payload['heartbeat'] = heart_rate
+            sensor_data = next(heart_data)
+            beats_per_min = sensor_data[0]
+            interbeat_intervals = sensor_data[1]
+            payload['heartbeat'] = beats_per_min
+            payload['rr_intervals'] = ':'.join(
+                [str(interval) for interval in interbeat_intervals]
+            )
             post_data = requests.post(url, data=payload)
             if post_data.status_code != STATUS_OK:
                 print('Error connecting to server...killing...')
@@ -40,19 +44,22 @@ def create_dummy_data():
     '''
     value = random.randint(95,105)
     while True:
-        yield value
+        yield (value, [x for x in range(595,605)])
 
 def fallback(delay=1):
     '''
     This method sends dummy data for testing purposes only.
     Do not use in production.
     '''
+    payload = dict()
     get_url = requests.get(URL)
     while True:
         dummy_data = create_dummy_data()
         if get_url.status_code == STATUS_OK:
             data = next(dummy_data)
-            post_data = requests.post(URL, data={'heartbeat':data})
+            payload['heartbeat'] = data[0]
+            payload['rr_intervals'] = ':'.join(str(x for x in data[1]))
+            post_data = requests.post(URL, data=payload)
             if post_data.status_code == STATUS_OK:
                 print('Sending {n} to {url}'.format(n=data, url=URL))
                 time.sleep(delay)

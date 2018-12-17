@@ -19,6 +19,7 @@ import render
 TIMESTAMPS = collections.deque(iterable=['00:00:00'], maxlen=30)
 HEART_RATES = collections.deque(iterable=[80], maxlen=30)
 EXTENDED_HEART_RATE_DATA = collections.deque(maxlen=100)
+INTERBEAT_INTERVALS = collections.deque(maxlen=100)
 
 server = flask.Flask(__name__)
 app = dash.Dash(__name__, server=server)
@@ -80,13 +81,19 @@ def dash_application():
 
 @server.route('/data', methods=['GET', 'POST'])
 def data_receive():
-    data = flask.request.form.get('heartbeat', '0')
+    bpm_data = flask.request.form.get('heartbeat', '0')
+    rr_intervals = flask.request.form.get('rr_intervals', '')
     response = ''
     try:
-        data = int(data)
+        bpm_data = int(bpm_data)
+        rr_intervals = str(rr_intervals)
+        response = 'Recieved:\n\tBPM: {bpm}\n\tRR_INTERVALS: {rr}'.format(
+            bpm=bpm_data, rr=rr_intervals)
         render.render_data(heart_rates=HEART_RATES, timestamps=TIMESTAMPS,
-                           data=data, extended_data=EXTENDED_HEART_RATE_DATA)
-        response = 'Recieved: {data}'.format(data=data)
+                           extended_heart_rates=EXTENDED_HEART_RATE_DATA,
+                           bpm_data=bpm_data,
+                           interbeat_intervals=INTERBEAT_INTERVALS,
+                           rr_intervals=rr_intervals)
     except ValueError:
         response = 'Received: Bad data.'
     return response

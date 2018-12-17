@@ -17,7 +17,7 @@ import time
 import Adafruit_ADS1x15
 
 
-def read_heart_rates():
+def read_heart_data():
     ADC = Adafruit_ADS1x15.ADS1015()
     GAIN = 2/3
     THRESHOLD = 525  # mid point in the waveform
@@ -32,6 +32,8 @@ def read_heart_rates():
     RATE = deque([0 for i in range(10)], maxlen=10)
     AMPLITUDE = 100
     LAST_TIME = int(time.time()*1000)
+
+    print("Running Sensor...")
 
     while True:
         Signal = ADC.read_adc(0, gain=GAIN) # First arg corresponds to ADC channel
@@ -74,8 +76,8 @@ def read_heart_rates():
               RUNNING_TOTAL += INTERBEAT_INTERVAL
               RUNNING_TOTAL //= 10
               BPM = 60000//RUNNING_TOTAL
-              print('BPM: {}'.format(BPM))
-              yield BPM
+              #print('BPM: {}'.format(BPM))
+              yield (BPM, RATE)
 
         if Signal < THRESHOLD and PULSE == True: # when the values are going down, the beat is over
             PULSE = False
@@ -91,10 +93,10 @@ def read_heart_rates():
             TIME_OF_LAST_HEARTBEAT = TIME_IN_MILLISECS
             FIRST_HEARTBEAT = True
             SECOND_HEARTBEAT = False
-            print('No beats found')
+            #print('No beats found')
 
 
 if __name__ == '__main__':
-    heart_beats = read_heart_rates()
+    heart_beats = read_heart_data()
     while True:
         next(heart_beats)
