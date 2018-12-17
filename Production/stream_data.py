@@ -44,7 +44,8 @@ def create_dummy_data():
     '''
     value = random.randint(95,105)
     while True:
-        yield (value, [x for x in range(595,605)])
+        interval = [x for x in range(595,605)]
+        yield (value, interval)
 
 def fallback(delay=1):
     '''
@@ -58,10 +59,11 @@ def fallback(delay=1):
         if get_url.status_code == STATUS_OK:
             data = next(dummy_data)
             payload['heartbeat'] = data[0]
-            payload['rr_intervals'] = ':'.join(str(x for x in data[1]))
+            intervals = ':'.join(str(x) for x in data[1])
+            payload['rr_intervals'] = intervals
             post_data = requests.post(URL, data=payload)
             if post_data.status_code == STATUS_OK:
-                print('Sending {n} to {url}'.format(n=data, url=URL))
+                print('Sending {n} to {url}'.format(n=intervals, url=URL))
                 time.sleep(delay)
 
 
