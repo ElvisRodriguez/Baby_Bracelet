@@ -64,7 +64,7 @@ def alert_message():
         message.append('HRV of {hrv} detected'.format(hrv=int(hrv)))
     return '\n'.join(message)
 
-@app.callback(Output('graph-app', 'children'),
+@app.callback(Output('live-graph', 'figure'),
               events=[Event('graph-update', 'interval')])
 def update_graph_scatter():
     data = go.Scatter(

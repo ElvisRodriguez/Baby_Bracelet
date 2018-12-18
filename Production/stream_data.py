@@ -63,7 +63,7 @@ def fallback(delay=1):
             payload['rr_intervals'] = intervals
             post_data = requests.post(URL, data=payload)
             if post_data.status_code == STATUS_OK:
-                print('Sending {n} to {url}'.format(n=intervals, url=URL))
+                print('Sending {n} to {url}'.format(n=data[0], url=URL))
                 time.sleep(delay)
 
 
