@@ -50,7 +50,21 @@ app.layout = html.Div(id = 'graph-app',
 
 ])
 
-@app.callback(Output('live-graph', 'figure'),
+def alert_message():
+    if len(EXTENDED_HEART_RATE_DATA) < 100:
+        return None
+    message = []
+    if analytics.is_rising(EXTENDED_HEART_RATE_DATA):
+        message.append('Heart Rate rising rapidy!')
+    if analytics.is_dropping(EXTENDED_HEART_RATE_DATA):
+        message.append('Heart Rate dropping rapidly!')
+    hrv = analytics.heart_rate_variability(INTERBEAT_INTERVALS)
+    if int(hrv) > 20:
+        message.append('Possibility of Atrial Fibrillation Episode')
+        message.append('HRV of {hrv} detected'.format(hrv=int(hrv)))
+    return '\n'.join(message)
+
+@app.callback(Output('graph-app', 'children'),
               events=[Event('graph-update', 'interval')])
 def update_graph_scatter():
     data = go.Scatter(
@@ -72,7 +86,10 @@ def update_graph_scatter():
             y = 2.0
         ),
     )
-    return {'data': [data], 'uirevision' : True, 'layout' : layout}
+    #message = alert_message()
+    #if message is not None:
+    #    script = html.script('alert({message})'.format(message=message))
+    return {'data': [data], 'layout' : layout}
 
 
 @server.route('/')

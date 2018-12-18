@@ -16,8 +16,8 @@ def is_rising(data):
             count += 1
         else:
             count = 0
-    if count >= notification_threshold:
-        return True
+        if count >= notification_threshold:
+            return True
     return False
 
 def is_dropping(data):
@@ -28,8 +28,8 @@ def is_dropping(data):
             count += 1
         else:
             count = 0
-    if count >= notification_threshold:
-        return True
+        if count >= notification_threshold:
+            return True
     return False
 
 def heart_rate_variability(interbeat_intervals):
@@ -38,6 +38,6 @@ def heart_rate_variability(interbeat_intervals):
     for i in range(1, N):
         difference = interbeat_intervals[i] - interbeat_intervals[i-1]
         mean_square.append(difference ** 2)
-    reciprocal = 1 / (number_of_intervals - 1)
+    reciprocal = 1 / (N - 1)
     result = math.sqrt(reciprocal * sum(mean_square))
     return result
