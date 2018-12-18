@@ -67,7 +67,7 @@ def alert_message():
 
 @app.callback(Output('live-graph', 'figure'),
               events=[Event('graph-update', 'interval')])
-def update_graph_scatter():
+def update_graph_scatter(counter=COUNTER):
     data = go.Scatter(
         x = list(TIMESTAMPS),
         y = list(HEART_RATES),
@@ -89,10 +89,10 @@ def update_graph_scatter():
     )
     script = None
     message = None
-    COUNTER += 1
-    if COUNTER == 60:
+    counter += 1
+    if counter == 60:
         message = alert_message()
-        COUNTER = 0
+        counter = 0
     if message is not None:
         script = html.script('alert({message})'.format(message=message))
     return {'data': [data], 'layout' : layout, 'script' : script}
