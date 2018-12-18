@@ -25,8 +25,8 @@ def render_data(heart_rates, timestamps, extended_heart_rates, bpm_data,
         None.
     '''
     if bpm_data > 0:
-        heart_rates.append(data_as_integer)
-        extended_heart_rates.append(data_as_integer)
+        heart_rates.append(bpm_data)
+        extended_heart_rates.append(bpm_data)
         ts = time_stamp.TimeStamp('EST')
         timestamps.append(ts.time())
     if rr_intervals != '':
