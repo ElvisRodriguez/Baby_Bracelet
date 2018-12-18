@@ -86,10 +86,11 @@ def update_graph_scatter():
             y = 2.0
         ),
     )
-    #message = alert_message()
-    #if message is not None:
-    #    script = html.script('alert({message})'.format(message=message))
-    return {'data': [data], 'layout' : layout}
+    message = alert_message()
+    script = None
+    if message is not None:
+        script = html.script('alert({message})'.format(message=message))
+    return {'data': [data], 'layout' : layout, 'script' : script}
 
 
 @server.route('/')
