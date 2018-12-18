@@ -24,12 +24,12 @@ def render_data(heart_rates, timestamps, extended_heart_rates, bpm_data,
     Returns:
         None.
     '''
-    if type(bpm_data) == type(int) and bpm_data > 0:
+    if bpm_data > 0:
         heart_rates.append(data_as_integer)
         extended_heart_rates.append(data_as_integer)
         ts = time_stamp.TimeStamp('EST')
         timestamps.append(ts.time())
-    if type(rr_intervals) == type(str) and rr_intervals != '':
+    if rr_intervals != '':
         rr_intervals = rr_intervals.split(':')
         rr_intervals = [int(interval) for interval in rr_intervals]
         interbeat_intervals.extend(rr_intervals)

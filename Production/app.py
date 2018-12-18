@@ -105,8 +105,7 @@ def data_receive():
     try:
         bpm_data = int(bpm_data)
         rr_intervals = str(rr_intervals)
-        response = 'Recieved: {bpm} ; {rr}'.format(
-            bpm=bpm_data, rr=rr_intervals)
+        response = 'Recieved: {bpm};{rr}'.format(bpm=bpm_data, rr=rr_intervals)
         render.render_data(heart_rates=HEART_RATES, timestamps=TIMESTAMPS,
                            extended_heart_rates=EXTENDED_HEART_RATE_DATA,
                            bpm_data=bpm_data,

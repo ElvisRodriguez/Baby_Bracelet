@@ -59,12 +59,14 @@ def fallback(delay=1):
         if get_url.status_code == STATUS_OK:
             data = next(dummy_data)
             payload['heartbeat'] = data[0]
-            intervals = ':'.join(str(x) for x in data[1])
+            intervals = ':'.join([str(x) for x in data[1]])
             payload['rr_intervals'] = intervals
             post_data = requests.post(URL, data=payload)
             if post_data.status_code == STATUS_OK:
                 print('Sending {n} to {url}'.format(n=data[0], url=URL))
                 time.sleep(delay)
+            get_data = requests.get(URL, params=payload)
+            print('Got Back {data}'.format(data=get_data.url))
 
 
 if __name__ == '__main__':
