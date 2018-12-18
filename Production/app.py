@@ -13,14 +13,12 @@ import flask
 import plotly.graph_objs as go
 
 import analytics
-#import md_doc
 import render
 
-TIMESTAMPS = collections.deque(iterable=['00:00:00'], maxlen=30)
-HEART_RATES = collections.deque(iterable=[80], maxlen=30)
+TIMESTAMPS = collections.deque(maxlen=30)
+HEART_RATES = collections.deque(maxlen=30)
 EXTENDED_HEART_RATE_DATA = collections.deque(maxlen=100)
 INTERBEAT_INTERVALS = collections.deque(maxlen=100)
-COUNTER = 0
 
 server = flask.Flask(__name__)
 app = dash.Dash(__name__, server=server)
@@ -37,11 +35,9 @@ app.layout = html.Div(id = 'graph-app',
         children = 'CS310 IoT Project'
     ),
 
-    #dcc.Markdown(md_doc.stringify_file(file_path='assets/template.md')),
-
     dcc.Graph(
         id = 'live-graph',
-        animate = True,
+        animate = False,
     ),
 
     dcc.Interval(
@@ -60,14 +56,19 @@ def alert_message():
     if analytics.is_dropping(EXTENDED_HEART_RATE_DATA):
         message.append('Heart Rate dropping rapidly!')
     hrv = analytics.heart_rate_variability(INTERBEAT_INTERVALS)
-    if int(hrv) > 20:
+    hb_average = analytics.average_heartbeat(EXTENDED_HEART_RATE_DATA)
+    if int(hrv) > 20 and hb_average > 100:
         message.append('Possibility of Atrial Fibrillation Episode')
         message.append('HRV of {hrv} detected'.format(hrv=int(hrv)))
     return '\n'.join(message)
 
 @app.callback(Output('live-graph', 'figure'),
               events=[Event('graph-update', 'interval')])
-def update_graph_scatter(counter=COUNTER):
+def update_graph_scatter():
+    latest_bpm = 80
+    if len(HEART_RATES) >= 1:
+        latest_bpm = HEART_RATES[-1]
+
     data = go.Scatter(
         x = list(TIMESTAMPS),
         y = list(HEART_RATES),
@@ -79,7 +80,7 @@ def update_graph_scatter(counter=COUNTER):
     )
 
     layout = go.Layout(
-        xaxis = dict(title='Time'),
+        xaxis = dict(title='Latest BPM:{bpm}'.format(bpm=latest_bpm)),
         yaxis = dict(title='Heart Rate', range=[1, 160]),
         showlegend = False,
         legend = go.layout.Legend(
@@ -87,15 +88,8 @@ def update_graph_scatter(counter=COUNTER):
             y = 2.0
         ),
     )
-    script = None
-    message = None
-    counter += 1
-    if counter == 60:
-        message = alert_message()
-        counter = 0
-    if message is not None:
-        script = html.script('alert({message})'.format(message=message))
-    return {'data': [data], 'layout' : layout, 'script' : script}
+
+    return {'data': [data], 'layout' : layout}
 
 
 @server.route('/')
