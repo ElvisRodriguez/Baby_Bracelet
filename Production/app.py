@@ -20,6 +20,7 @@ TIMESTAMPS = collections.deque(iterable=['00:00:00'], maxlen=30)
 HEART_RATES = collections.deque(iterable=[80], maxlen=30)
 EXTENDED_HEART_RATE_DATA = collections.deque(maxlen=100)
 INTERBEAT_INTERVALS = collections.deque(maxlen=100)
+COUNTER = 0
 
 server = flask.Flask(__name__)
 app = dash.Dash(__name__, server=server)
@@ -86,8 +87,12 @@ def update_graph_scatter():
             y = 2.0
         ),
     )
-    message = alert_message()
     script = None
+    message = None
+    COUNTER += 1
+    if COUNTER == 60:
+        message = alert_message()
+        COUNTER = 0
     if message is not None:
         script = html.script('alert({message})'.format(message=message))
     return {'data': [data], 'layout' : layout, 'script' : script}

@@ -44,7 +44,7 @@ def create_dummy_data():
     '''
     value = random.randint(95,105)
     while True:
-        interval = [x for x in range(595,605)]
+        interval = [x for x in range(10,605)]
         yield (value, interval)
 
 def fallback(delay=1):
@@ -65,8 +65,6 @@ def fallback(delay=1):
             if post_data.status_code == STATUS_OK:
                 print('Sending {n} to {url}'.format(n=data[0], url=URL))
                 time.sleep(delay)
-            get_data = requests.get(URL, params=payload)
-            print('Got Back {data}'.format(data=get_data.url))
 
 
 if __name__ == '__main__':
