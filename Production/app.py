@@ -10,6 +10,7 @@ import dash_core_components as dcc
 from dash.dependencies import Output, Event
 import dash_html_components as html
 import flask
+import os
 import plotly.graph_objs as go
 
 import analytics
@@ -19,6 +20,7 @@ TIMESTAMPS = collections.deque(maxlen=30)
 HEART_RATES = collections.deque(maxlen=30)
 EXTENDED_HEART_RATE_DATA = collections.deque(maxlen=100)
 INTERBEAT_INTERVALS = collections.deque(maxlen=100)
+COUNTER = 0
 
 server = flask.Flask(__name__)
 app = dash.Dash(__name__, server=server)
@@ -60,11 +62,17 @@ def alert_message():
     if int(hrv) > 20 and hb_average > 100:
         message.append('Possibility of Atrial Fibrillation Episode')
         message.append('HRV of {hrv} detected'.format(hrv=int(hrv)))
-    return '\n'.join(message)
+    if message is not None:
+        message = '\n'.join(message)
+        js_script = 'alert(\'{message}\')'.format(message=message)
+        file_path = os.path.join(os.getcwd(), 'assets', 'alerter.js')
+        with open(file_path, 'w') as file:
+            file.write(js_script)
+            file.close()
 
 @app.callback(Output('live-graph', 'figure'),
               events=[Event('graph-update', 'interval')])
-def update_graph_scatter():
+def update_graph_scatter(counter=COUNTER):
     latest_bpm = 80
     if len(HEART_RATES) >= 1:
         latest_bpm = HEART_RATES[-1]
@@ -88,6 +96,10 @@ def update_graph_scatter():
             y = 2.0
         ),
     )
+    counter += 1
+    if counter == 10:
+        alert_message()
+        counter = 0
 
     return {'data': [data], 'layout' : layout}
 
