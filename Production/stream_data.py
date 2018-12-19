@@ -42,9 +42,9 @@ def create_dummy_data():
     This method creates dummy data for testing purposes only.
     Do not use in production.
     '''
-    value = random.randint(95,105)
+    value = random.randint(95,100)
     while True:
-        interval = [x for x in range(10,605)]
+        interval = [random.randint(200,600) for x in range(10)]
         yield (value, interval)
 
 def fallback(delay=1):
